@@ -1,0 +1,27 @@
+## Project Context
+An online service to store all your chess games, analyze them, and review them. It helps bring all games from chess.com, lichess.org and over the board to one place for easy access and analysis.
+Theme and color scheme should be consistent with lichess.org. Use the same font as lichess.org, chess piece images should be consistent with lichess.org, and reuse as much as lichess opensource code as possible.
+Functionality are much like lichess study feature, but with unlimited storage and more advanced analysis Annotation
+
+## Features
+- Secure login and user authentication
+- Upload and manage PGN files
+- Analyze and review chess games
+- Search and filter games
+- Interactive chess board for game review
+- Game database with ability to add tags, and notes and use them to filter games
+- Modern, responsive UI
+- Opening repertoire and comparing the games played against the prepared uploaded opening repertoire.
+
+## Tech Stack
+- Backend: Node.js, Express
+- Frontend: TypeScript, React
+- Database: MongoDB
+- Chess Logic: pupular javascript chess library
+- Authentication: JWT
+
+## Code Style and Structure
+- Write concise, technical TypeScript code with accurate examples
+- Prefer iteration and modularization over code duplication
+- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError)
+- Structure repository files as follows:
