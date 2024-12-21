@@ -15,9 +15,9 @@ Functionality are much like lichess study feature, but with unlimited storage an
 
 ## Tech Stack
 - Backend: Node.js, Express
-- Frontend: TypeScript, React
+- Frontend: Javascript
 - Database: MongoDB
-- Chess Logic: pupular javascript chess library
+- Chess Logic: https://github.com/jhlywa/chess.js, https://github.com/lichess-org/chessground), https://github.com/oakmac/chessboardjs, https://github.com/chessground/chessground
 - Authentication: JWT
 
 ## Code Style and Structure
