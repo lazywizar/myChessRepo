@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 module.exports = {
-  port: process.env.PORT || 3001, // Changed to 3001 to avoid conflict with React's default port
+  port: process.env.PORT || 3005,
   mongodb: {
     uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/chess-manager'
   },

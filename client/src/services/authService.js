@@ -1,4 +1,4 @@
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api/auth';
+const API_URL = process.env.REACT_APP_AUTH_URL || 'http://localhost:3005/api/auth';
 
 const headers = {
   'Content-Type': 'application/json',
@@ -9,7 +9,7 @@ class AuthService {
   constructor() {
     this.token = localStorage.getItem('token');
     if (this.token) {
-      headers['Authorization'] = `Bearer ${this.token}`;
+      headers.Authorization = `Bearer ${this.token}`;
     }
   }
 
@@ -24,29 +24,39 @@ class AuthService {
     return data;
   }
 
-  async login(credentials) {
+  async login({ email, password, rememberMe = false }) {
     try {
+      console.log('Attempting login for:', email);
       const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers,
         credentials: 'include',
-        body: JSON.stringify(credentials)
+        body: JSON.stringify({ email, password, rememberMe })
       });
-      
-      const data = await this.handleResponse(response);
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('username', data.user.username || data.user.email);
-        headers['Authorization'] = `Bearer ${data.token}`;
+
+      console.log('Login response status:', response.status);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Login error response:', errorData);
+        throw new Error(errorData.message || 'Failed to login');
       }
+
+      const data = await response.json();
+      console.log('Login successful');
+      
+      localStorage.setItem('token', data.token);
+      headers.Authorization = `Bearer ${data.token}`;
       return data;
     } catch (error) {
-      throw new Error(error instanceof Error ? error.message : 'Failed to login');
+      console.error('Login error:', error);
+      throw error;
     }
   }
 
   async signup(userData) {
     try {
+      console.log('Attempting registration for:', userData.email);
       const response = await fetch(`${API_URL}/signup`, {
         method: 'POST',
         headers,
@@ -54,15 +64,23 @@ class AuthService {
         body: JSON.stringify(userData)
       });
 
-      const data = await this.handleResponse(response);
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('username', userData.username);
-        headers['Authorization'] = `Bearer ${data.token}`;
+      console.log('Registration response status:', response.status);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Registration error response:', errorData);
+        throw new Error(errorData.message || 'Failed to register');
       }
+
+      const data = await response.json();
+      console.log('Registration successful');
+      
+      localStorage.setItem('token', data.token);
+      headers.Authorization = `Bearer ${data.token}`;
       return data;
     } catch (error) {
-      throw new Error(error instanceof Error ? error.message : 'Failed to create account');
+      console.error('Registration error:', error);
+      throw error;
     }
   }
 
@@ -74,7 +92,8 @@ class AuthService {
       });
       return this.handleResponse(response);
     } catch (error) {
-      throw new Error(error instanceof Error ? error.message : 'Failed to verify email');
+      console.error('Verify email error:', error);
+      throw error;
     }
   }
 
@@ -87,7 +106,8 @@ class AuthService {
       });
       return this.handleResponse(response);
     } catch (error) {
-      throw new Error(error instanceof Error ? error.message : 'Failed to request password reset');
+      console.error('Forgot password error:', error);
+      throw error;
     }
   }
 
@@ -100,14 +120,42 @@ class AuthService {
       });
       return this.handleResponse(response);
     } catch (error) {
-      throw new Error(error instanceof Error ? error.message : 'Failed to reset password');
+      console.error('Reset password error:', error);
+      throw error;
+    }
+  }
+
+  async getProfile() {
+    try {
+      const token = localStorage.getItem('token');
+      console.log('Fetching profile with token:', token ? 'Present' : 'Missing');
+
+      const response = await fetch(`${API_URL}/profile`, {
+        headers: {
+          ...headers,
+          'Authorization': `Bearer ${token}`
+        },
+        credentials: 'include'
+      });
+
+      console.log('Profile response status:', response.status);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Profile error response:', errorData);
+        throw new Error(errorData.message || 'Failed to fetch profile');
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error('Get profile error:', error);
+      throw error;
     }
   }
 
   logout() {
     localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    delete headers['Authorization'];
+    delete headers.Authorization;
   }
 
   getCurrentToken() {

@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from '../nav/Navbar';
+import GameList from '../games/GameList';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -13,6 +14,7 @@ function Dashboard() {
           <h1>Welcome, {username}!</h1>
           <p>Manage and analyze your chess games</p>
         </div>
+        <GameList />
       </div>
     </div>
   );

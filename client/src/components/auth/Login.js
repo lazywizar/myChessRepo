@@ -25,11 +25,13 @@ function Login() {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-    
+
     try {
-      await authService.login(formData);
+      const { email, password, rememberMe } = formData;
+      await authService.login({ email, password, rememberMe });
       navigate('/dashboard');
     } catch (err) {
+      console.error('Login error:', err);
       setError(err.message || 'Failed to login');
     } finally {
       setIsLoading(false);
@@ -44,66 +46,62 @@ function Login() {
           <p>Sign in to continue to Chess Manager</p>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
-        
+        {error && (
+          <div className="error-message" onClick={() => setError('')}>
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
             <label htmlFor="email">Email</label>
-            <div className="input-wrapper">
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter your email"
-                required
-                className="auth-input"
-              />
-            </div>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              placeholder="Enter your email"
+              disabled={isLoading}
+            />
           </div>
 
           <div className="form-group">
             <label htmlFor="password">Password</label>
-            <div className="input-wrapper">
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter your password"
-                required
-                className="auth-input"
-              />
-            </div>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              placeholder="Enter your password"
+              disabled={isLoading}
+            />
           </div>
 
-          <div className="form-group checkbox-group">
-            <label className="checkbox-label">
+          <div className="form-group checkbox">
+            <label>
               <input
                 type="checkbox"
                 name="rememberMe"
                 checked={formData.rememberMe}
                 onChange={handleChange}
+                disabled={isLoading}
               />
-              <span>Remember me</span>
+              Remember me
             </label>
           </div>
 
-          <button 
-            type="submit" 
-            className={`auth-button ${isLoading ? 'loading' : ''}`}
-            disabled={isLoading}
-          >
+          <button type="submit" className="auth-button" disabled={isLoading}>
             {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
-        <div className="auth-footer">
-          <p>
-            Don't have an account? <Link to="/register">Sign up</Link>
-          </p>
+        <div className="auth-links">
+          <Link to="/forgot-password">Forgot Password?</Link>
+          <Link to="/register">Don't have an account? Sign up</Link>
         </div>
       </div>
     </div>
